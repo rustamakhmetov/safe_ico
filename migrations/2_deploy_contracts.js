@@ -1,5 +1,5 @@
-var MyERC20Token8 = artifacts.require("MyERC20Token8");
+var MyERC20Token9 = artifacts.require("MyERC20Token9");
 
 module.exports = function(deployer) {
-    deployer.deploy(MyERC20Token8)
+    deployer.deploy(MyERC20Token9)
 };

@@ -3,7 +3,7 @@ pragma solidity ^0.4.11;
 
 
 // Инициализация контракта
-contract MyERC20Token8 {
+contract MyERC20Token9 {
 
     // Объявляем переменную в которой будет название токена
     string public name;
@@ -33,7 +33,7 @@ contract MyERC20Token8 {
     event LogV(uint _message);
 
     // Функция инициализации контракта
-    function MyERC20Token8(){
+    function MyERC20Token9(){
         // Указываем число нулей
         decimals = 18;
         // Объявляем общее число токенов, которое будет создано при инициализации
@@ -46,9 +46,9 @@ contract MyERC20Token8 {
         _buyPrice = 10000;
 
         // Указываем название токена
-        name = "MyERC20Token8";
+        name = "MyERC20Token9";
         // Указываем символ токена
-        symbol = "MET8";
+        symbol = "MET9";
 
         startTime = now;
     }

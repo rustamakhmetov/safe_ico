@@ -1,6 +1,6 @@
 const Reverter = require('./helpers/reverter');
 const MainICO = artifacts.require('MainICO');
-const Token = artifacts.require('MyERC20Token8');
+const Token = artifacts.require('MyERC20Token9');
 
 contract('[MainICO] buy tokens', function(accounts) {
     const reverter = new Reverter(web3);
