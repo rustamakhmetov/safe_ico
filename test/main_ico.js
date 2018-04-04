@@ -1,19 +1,18 @@
 const Reverter = require('./helpers/reverter');
 const Asserts = require('./helpers/asserts');
 const MainICO = artifacts.require('MainICO');
+const Token = artifacts.require('MyERC20Token8');
 
 contract('MainICO', function(accounts) {
     const reverter = new Reverter(web3);
     afterEach('revert', reverter.revert);
 
     let main_ico;
-
-    // before('setup', async () => {
-    //     main_ico = await MainICO.deployed();
-    //     await reverter.snapshot;
-    // });
+    let token;
 
     before('setup', () => {
+        Token.deployed()
+            .then(instance => token = instance);
         return MainICO.deployed()
             .then(instance => main_ico = instance)
             .then(reverter.snapshot);
@@ -33,24 +32,24 @@ contract('MainICO', function(accounts) {
         assert.equal(current_time.toNumber(), start_time+10, "current time should be change");
     });
 
-    // it('has hello world as initial message ', async function() {
-    //     const contract = await HelloWorld.deployed()
-    //     const message = await contract.getMessage()
-    //
-    //     assert.equal(message, 'hello world', 'message is hello world')
-    // })
-    // it('changes the message via setMessage', async function() {
-    //     const contract = await HelloWorld.deployed()
-    //
-    //     // Execute a transaction and change the state of the contract.
-    //     await contract.setMessage('hola mundo')
-    //
-    //     // Get the new state.
-    //     const message = await contract.getMessage()
-    //
-    //     assert.equal(message, 'hola mundo', 'message is hola mundo')
-    // })
+    it('change stages', async function() {
+        let stage = await main_ico.stage.call();
+        let buy_price = (await main_ico.buy_price.call()).toNumber();
+        assert.equal(stage, "Stage1ICO", "stage should be 'Stage1ICO'");
+        assert.equal(buy_price, web3.toWei(0.001, "ether"), "buy price should be 10000");
 
-    //===================================================================
+        await reverter.timeTravel(121); // 2 min
+        stage = await main_ico.stage.call();
+        assert.equal(stage, "Stage2ICO", "stage should be 'Stage2ICO'");
+        buy_price = (await main_ico.buy_price.call()).toNumber();
+        assert.equal(buy_price, web3.toWei(0.01, "ether"), "buy price should be 20000");
 
+        for (let i=0; i < 2; i++) {
+            await reverter.timeTravel(120); // 2 min
+            stage = await main_ico.stage.call();
+            assert.equal(stage, "Stage3ICO", "stage should be 'Stage3ICO'");
+            buy_price = (await main_ico.buy_price.call()).toNumber();
+            assert.equal(buy_price, web3.toWei(0.1, "ether"), "buy price should be 40000");
+        }
+    });
 });

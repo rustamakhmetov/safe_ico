@@ -9,6 +9,7 @@ contract MainICO is BaseICO {
     BaseICO public _contract;
     uint public startTime;
     address public owner;
+    //address public __base;
 
     function MainICO(MyERC20Token8 _token){
         token = _token;
