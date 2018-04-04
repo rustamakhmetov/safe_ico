@@ -1,10 +1,12 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.11;
 
 import "./AbstractICO.sol";
 
 // Объявляем интерфейс
 interface MyERC20Token8 {
     function transfer(address _receiver, uint256 _amount);
+    function decimals() returns(uint8);
+    //function decimals();
 }
 
 contract BaseICO is AbstractICO {
@@ -12,12 +14,15 @@ contract BaseICO is AbstractICO {
     uint public buyPrice;
     // Объявялем переменную для токена
     MyERC20Token8 public token;
+    uint public _tokens;
+    uint public __amount;
 
     event Log(string _message);
+    event LogV(string _message, uint _value);
 
     // Функция для прямой отправки эфиров на контракт
     function () payable {
-        Log("default log");
+        emit Log("default log");
         _buy(msg.sender, msg.value);
     }
 
@@ -31,15 +36,15 @@ contract BaseICO is AbstractICO {
     }
 
     // Внутренняя функция покупки токенов, возвращает число купленных токенов
-    function _buy(address _sender, uint256 _amount) internal returns (uint){
-        Log("_buy");
+    function _buy(address _sender, uint _amount) internal returns (uint){
         // Рассчитываем стоимость
-        uint tokens = _amount / _buy_price();
-        // Отправляем токены с помощью вызова метода токена
-        //token.transfer(_sender, tokens);
-        // Возвращаем значение
-        Log(strConcat("_buy tokens: ", uint2str(tokens)));
-        return tokens;
+        buyPrice = _buy_price();
+        require(buyPrice > 0);
+        _tokens = _amount * (10 ** uint256(token.decimals())) / buyPrice;
+        __amount = _amount;
+//        // Отправляем токены с помощью вызова метода токена
+        token.transfer(_sender, _tokens);
+        return _tokens;
     }
 
     function _buy_price() internal returns(uint256) {

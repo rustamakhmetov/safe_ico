@@ -28,6 +28,10 @@ contract MyERC20Token8 {
     // Объявляем эвент для логгирования события одобрения перевода токенов
     event Approval(address from, address to, uint256 value);
 
+    event Log(string _message);
+    event LogA(string _message, address _address);
+    event LogV(uint _message);
+
     // Функция инициализации контракта
     function MyERC20Token8(){
         // Указываем число нулей
@@ -51,8 +55,12 @@ contract MyERC20Token8 {
 
     // Внутренняя функция для перевода токенов
     function _transfer(address _from, address _to, uint256 _value) internal {
+        LogA("_to", _to);
         require(_to != 0x0);
-        // Проверка на пустой адрес
+//        // Проверка на пустой адрес
+        LogA("_from", _from);
+        LogA("this", this);
+        LogV(balanceOf[_from]);
         require(balanceOf[_from] >= _value);
         // Проверка того, что отправителю хватает токенов для перевода
         require(balanceOf[_to] + _value >= balanceOf[_to]);
@@ -69,7 +77,7 @@ contract MyERC20Token8 {
 
     // Функция для перевода токенов
     function transfer(address _to, uint256 _value) public {
-        _transfer(msg.sender, _to, _value);
+        _transfer(this, _to, _value);
         // Вызов внутренней функции перевода
     }
 
