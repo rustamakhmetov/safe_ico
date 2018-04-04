@@ -52,6 +52,11 @@ contract MainICO is BaseICO {
         return _contract;
     }
 
+    function getTokenName() returns(string) {
+        bytes32 _name = token.getName();
+        return bytes32ToString(_name);
+    }
+
     function getCurrentTime() returns (uint){
         return now;
     }

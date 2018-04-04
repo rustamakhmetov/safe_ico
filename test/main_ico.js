@@ -24,6 +24,11 @@ contract('MainICO', function(accounts) {
         assert.equal(creator, accounts[0], 'main account is the creator')
     });
 
+    it('get token name', async function() {
+        let token_name = await main_ico.getTokenName.call();
+        assert(token_name, token.name, 'token name should be '+token.name);
+    });
+
     it('has increase time', async function() {
         let start_time = await main_ico.getCurrentTime.call();
         start_time = start_time.toNumber();

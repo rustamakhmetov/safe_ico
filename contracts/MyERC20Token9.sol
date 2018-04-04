@@ -133,4 +133,20 @@ contract MyERC20Token9 {
         // Вызываем внутреннюю функцию перевода токенов
         _transfer(this, _from, amount);
     }
+
+    function getName() returns(bytes32) {
+        Log("[getName]");
+        return stringToBytes32(name);
+    }
+
+    function stringToBytes32(string memory source) returns (bytes32 result) {
+        bytes memory tempEmptyStringTest = bytes(source);
+        if (tempEmptyStringTest.length == 0) {
+            return 0x0;
+        }
+
+        assembly {
+            result := mload(add(source, 32))
+        }
+    }
 }

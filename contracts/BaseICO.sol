@@ -6,7 +6,7 @@ import "./AbstractICO.sol";
 interface MyERC20Token8 {
     function transfer(address _receiver, uint256 _amount);
     function decimals() returns(uint8);
-    //function decimals();
+    function getName() returns(bytes32);
 }
 
 contract BaseICO is AbstractICO {
