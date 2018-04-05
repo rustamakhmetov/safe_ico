@@ -60,7 +60,7 @@ contract BaseICO is AbstractICO {
     public
     returns (bool)
     {
-        return keccak256(this.name()) == keccak256(value);
+        return keccak256(bytes32ToString(this.name())) == keccak256(value);
     }
 
     function bytes32ToString(bytes32 x) constant returns (string) {
