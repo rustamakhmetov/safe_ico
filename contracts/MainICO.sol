@@ -5,6 +5,12 @@ import "./Stage1ICO.sol";
 import "./Stage2ICO.sol";
 import "./Stage3ICO.sol";
 
+//import "https://github.com/rustamakhmetov/safe_ico/contracts/BaseICO.sol";
+//import "https://github.com/rustamakhmetov/safe_ico/contracts/Stage1ICO.sol";
+//import "https://github.com/rustamakhmetov/safe_ico/contracts/Stage2ICO.sol";
+//import "https://github.com/rustamakhmetov/safe_ico/contracts/Stage3ICO.sol";
+//import "https://github.com/rustamakhmetov/safe_ico/contracts/MyERC20Token9.sol";
+
 contract MainICO is BaseICO {
     BaseICO public _contract;
     uint public startTime;
