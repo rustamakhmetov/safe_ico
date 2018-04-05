@@ -12,23 +12,50 @@ import "./Stage3ICO.sol";
 //import "https://github.com/rustamakhmetov/safe_ico/contracts/MyERC20Token9.sol";
 
 contract MainICO is BaseICO {
-    BaseICO public _contract;
     uint public startTime;
     address public owner;
-    //address public __base;
+    BaseICO[] stages = new BaseICO[](3);
+    uint public current_stage;
+
+    event Stage(uint _value);
 
     function MainICO(MyERC20Token8 _token){
         token = _token;
         startTime = now;
-        _contract = new Stage1ICO(token);
+        stages[0] = new Stage1ICO(token);
+        stages[1] = new Stage2ICO(token);
+        stages[2] = new Stage3ICO(token);
+        setStage(0);
         owner = msg.sender;
     }
 
-    // remove contract
     function remove() public {
         if (msg.sender == owner){
             selfdestruct(owner);
         }
+    }
+
+    function setStage(uint _value) internal {
+        current_stage = _value;
+    }
+
+    function getStage() internal returns(BaseICO) {
+        return stages[current_stage];
+    }
+
+    function getCurrentStage() public constant returns(uint) {
+        return current_stage;
+    }
+
+    function nextStage() internal returns(BaseICO) {
+        if (stages.length > current_stage + 1) {
+            setStage(current_stage + 1);
+        }
+        return getStage();
+    }
+
+    function getStageName() public returns(string) {
+        return bytes32ToString(getStage().name());
     }
 
     function _buy_price() internal returns(uint256) {
@@ -36,26 +63,20 @@ contract MainICO is BaseICO {
         return getContract().buyPrice();
     }
 
+    function updateStage() public {
+        if (current_stage<2 && now > startTime + 4 minutes){
+            // третий этап
+            nextStage();
+        } else if (current_stage<1 && now > startTime + 2 minutes)	{
+            // второй этап
+            nextStage();
+        }
+    }
+
     function getContract() internal returns(BaseICO) {
-        if (now > startTime + 4 minutes){
-            //третий	вариант
-            if (!_contract.isName("Stage3ICO")) {
-                _contract = new Stage3ICO(token);
-            }
-            emit Log("stage 3");
-            return _contract;
-        }
-        if (now > startTime + 2 minutes)	{
-            //	второй	вариант
-            if  (!_contract.isName("Stage2ICO")) {
-                _contract = new Stage2ICO(token);
-            }
-            Log("stage 2");
-            return _contract;
-        }
-        // первый вариант
-        Log("stage 1");
-        return _contract;
+        updateStage();
+        Stage(current_stage);
+        return getStage();
     }
 
     function getTokenName() view returns(string) {
